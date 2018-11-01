@@ -1,0 +1,15 @@
+li {
+    display: inline-block;
+}
+
+h1 {
+    text-align: center;
+}
+
+article {
+    border-bottom: 1px solid black;
+}
+
+label, input, textarea{
+    display: block;
+}
