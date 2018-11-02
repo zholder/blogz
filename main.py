@@ -17,9 +17,12 @@ class Blog(db.Model):
         self.title = title
         self.body = body
 
+def get_blogs():
+    return db.session.query(Blog).all()
+
 @app.route('/blog', methods=['GET'])
 def index():
-    return render_template('index.html', title="Blog Post")
+    return render_template('index.html', title="Blog Post", blogs=get_blogs())
         
 @app.route('/newpost', methods=['GET'])
 def newpost():
@@ -30,7 +33,6 @@ def add_blog():
     # look inside the request to figure out what the user typed
     blog_title = request.form['blog_title']
     blog_content = request.form['blog_content']
-
     blog = Blog(blog_title, blog_content)
     db.session.add(blog)
     db.session.commit()
