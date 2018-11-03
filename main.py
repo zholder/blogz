@@ -18,7 +18,10 @@ class Blog(db.Model):
         self.body = body
 
 def get_blogs():
-    return db.session.query(Blog.title, Blog.body).all()
+    return db.session.query(Blog.title, Blog.body, Blog.id).all()
+
+def get_blogs_by_id(id):
+    return Blog.query.filter_by(id=id)
 
 def blog_empty(blog):
     if blog == '':
@@ -53,8 +56,12 @@ def add_blog():
         blog = Blog(blog_title, blog_content)
         db.session.add(blog)
         db.session.commit()
-        return redirect('/blog')
+        return redirect('/blog/page?id='+str(blog.id))
 
+@app.route("/blog/page", methods=['GET'])
+def blog():
+    id = request.args.get('id')
+    return render_template("blog.html", id=id, blogs=get_blogs_by_id(id))
 
 if __name__ == '__main__':
     app.run()

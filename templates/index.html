@@ -6,7 +6,7 @@
     <h1>Build a Blog</h1>
     <article>
         {% for blog in blogs: %}
-            <h2>{{blog.title}}</h2>
+            <h2><a href="./blog/page?id={{blog.id}}">{{blog.title}}</a></h2>
             <p>{{blog.body}}</p>
         {% endfor %}
         
