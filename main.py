@@ -18,7 +18,11 @@ class Blog(db.Model):
         self.body = body
 
 def get_blogs():
-    return db.session.query(Blog).all()
+    return db.session.query(Blog.title, Blog.body).all()
+
+def blog_empty(blog):
+    if blog == '':
+        return True
 
 @app.route('/blog', methods=['GET'])
 def index():
@@ -28,15 +32,28 @@ def index():
 def newpost():
     return render_template('newpost.html', title="New Post")
 
-@app.route("/add", methods=['POST'])
+@app.route("/blog", methods=['POST'])
 def add_blog():
     # look inside the request to figure out what the user typed
     blog_title = request.form['blog_title']
     blog_content = request.form['blog_content']
-    blog = Blog(blog_title, blog_content)
-    db.session.add(blog)
-    db.session.commit()
-    return 'sucess'
+    blog_title_error = ''
+    blog_content_error = ''
+
+    if blog_empty(blog_title) and blog_empty(blog_content):
+        return render_template('newpost.html', title="New Post", blog_title_error = 'Blog Title Invalid', blog_content_error = 'Blog Body Invalid')
+    
+    elif blog_empty(blog_title):
+        return render_template('newpost.html', title="New Post", blog_title_error = 'Blog Title Invalid', blog_content=blog_content)
+
+    elif blog_empty(blog_content):
+        return render_template('newpost.html', title="New Post", blog_content_error = 'Blog Body Invalid', blog_title=blog_title)
+
+    else:
+        blog = Blog(blog_title, blog_content)
+        db.session.add(blog)
+        db.session.commit()
+        return redirect('/blog')
 
 
 if __name__ == '__main__':
