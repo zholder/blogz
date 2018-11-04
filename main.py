@@ -26,9 +26,6 @@ class Blog(db.Model):
 def get_blogs():
     return db.session.query(Blog.title, Blog.body, Blog.id).order_by(Blog.pub_date.desc()).all()
 
-def get_blogs_by_id(id):
-    return Blog.query.filter_by(id=id)
-
 def blog_empty(blog):
     if blog == '':
         return True
@@ -40,8 +37,11 @@ def index():
         blogs=get_blogs()
         return render_template("index.html", blogs=blogs)
     else:
-        blogs=get_blogs_by_id(id)
-        return render_template("blog.html", blogs=blogs)
+        title=  .query(Blog.title).filter_by(id=id).first()
+        body=db.session.query(Blog.body).filter_by(id=id).first()
+        #.first allows a value to return from the query
+        #grab 0th item in tuple that returns
+        return render_template("blog.html", title=title[0],body=body[0])
 
 @app.route('/newpost', methods=['GET'])
 def newpost():
