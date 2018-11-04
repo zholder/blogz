@@ -37,7 +37,7 @@ def index():
         blogs=get_blogs()
         return render_template("index.html", blogs=blogs)
     else:
-        title=  .query(Blog.title).filter_by(id=id).first()
+        title=db.session.query(Blog.title).filter_by(id=id).first()
         body=db.session.query(Blog.body).filter_by(id=id).first()
         #.first allows a value to return from the query
         #grab 0th item in tuple that returns
@@ -68,7 +68,7 @@ def add_blog():
         blog = Blog(blog_title, blog_content)
         db.session.add(blog)
         db.session.commit()
-        return redirect('/blog/page?id='+str(blog.id))
+        return redirect('/blog?id='+str(blog.id))
    
 
 if __name__ == '__main__':
