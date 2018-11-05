@@ -1,15 +1,47 @@
+body {
+    font-family: 'Crimson Text', serif;
+    padding: 0 15px;
+    color: navy;
+}
+
+ul {
+    padding: 0;
+}
 li {
     display: inline-block;
+    padding: 5px;
 }
 
 h1 {
     text-align: center;
+    color: green;
 }
 
 article {
-    border-bottom: 1px solid black;
+    border-bottom: 1px solid navy;
+}
+
+textarea {
+    width: 500px;
+    height: 200px;
+}
+
+label {
+    margin-bottom: 10px;
+}
+
+input {
+    width: 200px;
 }
 
 label, input, textarea{
     display: block;
+}
+
+.error {
+    color: red;
+}
+
+a, a:visited {
+    color: navy;
 }
