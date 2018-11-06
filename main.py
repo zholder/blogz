@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template
+from flask import Flask, request, redirect, render_template, session
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -7,6 +7,7 @@ app.config['DEBUG'] = True
 app.config['SQLALCHEMY_DATABASE_URI'] = 'mysql+pymysql://blogz:PvTKOZxheUHO95P4@localhost:8889/blogz'
 app.config['SQLALCHEMY_ECHO'] = True
 db = SQLAlchemy(app)
+app.secret_key = 'y337kGc'
 
 class Blog(db.Model):
     #specify data fields into columns
@@ -14,14 +15,25 @@ class Blog(db.Model):
     title = db.Column(db.String(120))
     body = db.Column(db.String(1000))
     pub_date = db.Column(db.DateTime)
+    owner_id = db.Column(db.Integer, db.ForeignKey('user.id'))
 
-
-    def __init__(self, title, body, pub_date=None):
+    def __init__(self, title, body, owner, pub_date=None):
         self.title = title
         self.body = body
+        self.owner = owner
         if pub_date is None:
             pub_date = datetime.utcnow()
         self.pub_date = pub_date
+        
+class User(db.Model):
+    id = db.Column(db.Integer, primary_key=True)
+    username = db.Column(db.String(120), unique=True)
+    password = db.Column(db.String(120))
+    blogs = db.relationship('Blog', backref='owner')
+
+    def __init__(self, username, password):
+        self.username = username
+        self.password = password
 
 def get_blogs():
     return db.session.query(Blog.title, Blog.body, Blog.id).order_by(Blog.pub_date.desc()).all()
@@ -52,6 +64,8 @@ def add_blog():
     # look inside the request to figure out what the user typed
     blog_title = request.form['blog_title']
     blog_content = request.form['blog_content']
+    blog_owner = User.query.filter_by(username=session['username']).first()
+
     blog_title_error = ''
     blog_content_error = ''
 
@@ -65,11 +79,45 @@ def add_blog():
         return render_template('newpost.html', title="New Post", blog_content_error = 'Blog Body Invalid', blog_title=blog_title)
 
     else:
-        blog = Blog(blog_title, blog_content)
+        blog = Blog(blog_title, blog_content, blog_owner)
         db.session.add(blog)
         db.session.commit()
         return redirect('/blog?id='+str(blog.id))
-   
+
+@app.route('/register', methods=['POST', 'GET'])
+def register():
+    if request.method == 'POST':
+        #.form because it is a post, if it was a get it would be .args. could also use form.get. .get handles null values and returns None
+        username = request.form['username']
+        password = request.form['password']
+        verify = request.form['verify']
+
+        #TODO - validate user's data
+
+
+        existing_user = User.query.filter_by(username=username).first()
+        if not existing_user:
+            new_user = User(username, password)
+            db.session.add(new_user)
+            db.session.commit()
+            session['username'] = username
+            return redirect ('/blog')
+        else:
+            return '<h1>Duplicate User</h1>'
+
+    return render_template('register.html')
+
+@app.route('/login', methods=['POST', 'GET'])
+def login():
+    if request.method == 'POST':
+        username = request.form['username']
+        password = request.form['password']
+        user = User.query.filter_by(username=username).first()
+        if user and user.password == password:
+            session['username'] = username
+            return redirect ('/blog')
+
+    return render_template('login.html')
 
 if __name__ == '__main__':
     app.run()
