@@ -1,4 +1,4 @@
-from flask import Flask, request, redirect, render_template, session
+from flask import Flask, request, redirect, render_template, session, flash
 from flask_sqlalchemy import SQLAlchemy
 from datetime import datetime
 
@@ -10,7 +10,6 @@ db = SQLAlchemy(app)
 app.secret_key = 'y337kGc'
 
 class Blog(db.Model):
-    #specify data fields into columns
     id = db.Column(db.Integer, primary_key=True)
     title = db.Column(db.String(120))
     body = db.Column(db.String(1000))
@@ -38,9 +37,14 @@ class User(db.Model):
 def get_blogs():
     return db.session.query(Blog.title, Blog.body, Blog.id).order_by(Blog.pub_date.desc()).all()
 
-def blog_empty(blog):
-    if blog == '':
+def is_empty(item):
+    if item == '':
         return True
+
+def too_short(item, num):
+    if len(item) < int(num):
+        return True
+
 
 @app.route('/blog', methods=['GET'])
 def index():
@@ -66,16 +70,13 @@ def add_blog():
     blog_content = request.form['blog_content']
     blog_owner = User.query.filter_by(username=session['username']).first()
 
-    blog_title_error = ''
-    blog_content_error = ''
-
-    if blog_empty(blog_title) and blog_empty(blog_content):
+    if is_empty(blog_title) and is_empty(blog_content):
         return render_template('newpost.html', title="New Post", blog_title_error = 'Blog Title Invalid', blog_content_error = 'Blog Body Invalid')
     
-    elif blog_empty(blog_title):
+    elif is_empty(blog_title):
         return render_template('newpost.html', title="New Post", blog_title_error = 'Blog Title Invalid', blog_content=blog_content)
 
-    elif blog_empty(blog_content):
+    elif is_empty(blog_content):
         return render_template('newpost.html', title="New Post", blog_content_error = 'Blog Body Invalid', blog_title=blog_title)
 
     else:
@@ -84,28 +85,47 @@ def add_blog():
         db.session.commit()
         return redirect('/blog?id='+str(blog.id))
 
-@app.route('/register', methods=['POST', 'GET'])
-def register():
+@app.route('/signup', methods=['POST', 'GET'])
+def signup():
     if request.method == 'POST':
         #.form because it is a post, if it was a get it would be .args. could also use form.get. .get handles null values and returns None
         username = request.form['username']
         password = request.form['password']
         verify = request.form['verify']
-
-        #TODO - validate user's data
-
-
         existing_user = User.query.filter_by(username=username).first()
-        if not existing_user:
+        username_error = ''
+        password_error = ''
+        verify_error = ''
+        
+
+        if not existing_user and password == verify and len(password)>0 and not too_short(password,3) and not too_short(username,3):
             new_user = User(username, password)
             db.session.add(new_user)
             db.session.commit()
             session['username'] = username
-            return redirect ('/blog')
-        else:
-            return '<h1>Duplicate User</h1>'
+            return redirect ('/newpost')
+        else:     
 
-    return render_template('register.html')
+            if existing_user:
+                username_error='User already exists'
+            if is_empty(username):
+                username_error='User name empty'
+            if is_empty(password):
+                password_error='Password empty'
+            if is_empty(verify):
+                verify_error='Verify Password empty'
+            if password != verify:
+                verify_error='''Passwords don't match'''
+            if too_short(username, 3):
+                username_error = "User name too short"
+            if too_short(password, 3):
+                password_error = "Password too short"
+
+            return render_template('signup.html', username=username, username_error=username_error, password_error=password_error, verify_error=verify_error )
+
+
+
+    return render_template('signup.html')
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
@@ -115,8 +135,14 @@ def login():
         user = User.query.filter_by(username=username).first()
         if user and user.password == password:
             session['username'] = username
-            return redirect ('/blog')
-
+            return redirect ('/newpost')
+        elif user and password != user.password:
+            flash('Password incorrect')
+            return redirect('/login')
+        elif not user:
+            flash('Username does not exist')
+            return redirect('/login')
+    
     return render_template('login.html')
 
 if __name__ == '__main__':
