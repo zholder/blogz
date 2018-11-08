@@ -8,8 +8,11 @@
 <body>
     <nav>
         <ul>
-            <li><a href="/blog">Main Blog Post</a></li>
-            <li><a href="/newpost">Add a Blog Entry</a></li>
+            <li class='menu'><a href="/">Home</a></li>
+            <li class='menu'><a href="/blog">All Blogs</a></li>
+            <li class='menu'><a href="/newpost">Add a Blog Entry</a></li>
+            <li class='menu'><a href="/login">Login</a></li>
+            <li class='menu'><a href="/logout">Logout</a></li>
         </ul>
     </nav>
     {% with messages = get_flashed_messages() %}

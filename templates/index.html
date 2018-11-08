@@ -2,11 +2,10 @@
 
 {% block content %}
     
-    <h1>Build a Blog</h1>
-        {% for blog in blogs: %}
-        <article>
-            <h2><a href="./blog?id={{blog.id}}">{{blog.title}}</a></h2>
-            <p>{{blog.body}}</p>
-        </article>
+    <h1>Users</h1>
+        {% for user in users: %}
+        <ul class='users'>
+            <li>{{user.username}}</li>
+        </ul>
         {% endfor %}
 {% endblock %}

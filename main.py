@@ -45,13 +45,24 @@ def too_short(item, num):
     if len(item) < int(num):
         return True
 
+@app.before_request    
+def require_login():
+    allowed_routes = ['index', 'list_blogs', 'login', 'signup', 'static']
+    print(session)
+    if request.endpoint not in allowed_routes and 'username' not in session:
+        return redirect('/login')
+
+@app.route('/', methods=['GET'])
+def index():
+    users = db.session.query(User.username).order_by(User.id).all()
+    return render_template("index.html", users=users)
 
 @app.route('/blog', methods=['GET'])
-def index():
+def list_blogs():
     id = request.args.get('id')
     if id is None:
         blogs=get_blogs()
-        return render_template("index.html", blogs=blogs)
+        return render_template("listblogs.html", blogs=blogs)
     else:
         title=db.session.query(Blog.title).filter_by(id=id).first()
         body=db.session.query(Blog.body).filter_by(id=id).first()
@@ -144,6 +155,11 @@ def login():
             return redirect('/login')
     
     return render_template('login.html')
+
+@app.route('/logout')
+def logout():
+    del session['username']
+    return redirect('/blog')
 
 if __name__ == '__main__':
     app.run()
