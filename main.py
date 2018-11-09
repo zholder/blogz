@@ -2,6 +2,10 @@ from models import User, Blog
 from app import app, db
 from flask import request, redirect, render_template, session, flash
 
+def get_user_blogs(id):
+    return db.session.query(Blog.title, Blog.body, Blog.id).filter_by(owner_id=id).order_by(Blog.pub_date.desc()).all()
+
+
 def get_blogs():
     return db.session.query(Blog.title, Blog.body, Blog.id).order_by(Blog.pub_date.desc()).all()
 
@@ -22,21 +26,26 @@ def require_login():
 
 @app.route('/', methods=['GET'])
 def index():
-    users = db.session.query(User.username).order_by(User.id).all()
+    users = db.session.query(User.username, User.id).order_by(User.id).all()
     return render_template("index.html", users=users)
 
 @app.route('/blog', methods=['GET'])
 def list_blogs():
     id = request.args.get('id')
-    if id is None:
+    user = request.args.get('user')    
+    user_id = db.session.query(User.id).filter_by(username=user)
+
+    if id is None and user is None:
         blogs=get_blogs()
         return render_template("listblogs.html", blogs=blogs)
-    else:
+    elif id != None:
         title=db.session.query(Blog.title).filter_by(id=id).first()
         body=db.session.query(Blog.body).filter_by(id=id).first()
         #.first allows a value to return from the query
         #grab 0th item in tuple that returns
         return render_template("blog.html", title=title[0],body=body[0])
+    else:
+        return render_template("listblogs.html", blogs=get_user_blogs(user_id))
 
 @app.route('/newpost', methods=['GET'])
 def newpost():
@@ -63,6 +72,7 @@ def add_blog():
         db.session.add(blog)
         db.session.commit()
         return redirect('/blog?id='+str(blog.id))
+    
 
 @app.route('/signup', methods=['POST', 'GET'])
 def signup():
