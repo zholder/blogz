@@ -3,11 +3,23 @@ from app import app, db
 from flask import request, redirect, render_template, session, flash
 
 def get_user_blogs(id):
-    return db.session.query(Blog.title, Blog.body, Blog.id).filter_by(owner_id=id).order_by(Blog.pub_date.desc()).all()
-
+    return db.session.query(Blog.title, Blog.body, Blog.id, Blog.pub_date, User.username).\
+    filter_by(owner_id=id).\
+    join (User).\
+    order_by(Blog.pub_date.desc()).\
+    all()
 
 def get_blogs():
-    return db.session.query(Blog.title, Blog.body, Blog.id).order_by(Blog.pub_date.desc()).all()
+    return db.session.query(Blog.title, Blog.body, Blog.id, Blog.pub_date, User.username).\
+    join (User).\
+    order_by(Blog.pub_date.desc()).\
+    all()
+
+def get_author(id):
+    return db.session.query(User.username).\
+            join(Blog).\
+            filter_by(id=id).\
+            first()
 
 def is_empty(item):
     if item == '':
@@ -41,9 +53,12 @@ def list_blogs():
     elif id != None:
         title=db.session.query(Blog.title).filter_by(id=id).first()
         body=db.session.query(Blog.body).filter_by(id=id).first()
-        #.first allows a value to return from the query
-        #grab 0th item in tuple that returns
-        return render_template("blog.html", title=title[0],body=body[0])
+        pub_date=db.session.query(Blog.pub_date).filter_by(id=id).first()
+        author=db.session.query(User.username).\
+            join(Blog).\
+            filter_by(id=id).\
+            first()
+        return render_template("blog.html", title=title[0],body=body[0],author=author[0],pub_date=pub_date[0])
     else:
         return render_template("listblogs.html", blogs=get_user_blogs(user_id))
 

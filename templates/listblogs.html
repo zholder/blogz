@@ -7,6 +7,7 @@
         <article>
             <h2><a href="./blog?id={{blog.id}}">{{blog.title}}</a></h2>
             <p>{{blog.body}}</p>
+            <p>Written by <a href="./blog?user={{blog.username}}">{{blog.username}}</a> on {{blog.pub_date}}</p>
         </article>
         {% endfor %}
 {% endblock %}
