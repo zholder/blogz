@@ -2,21 +2,19 @@ from models import User, Blog
 from app import app, db
 from flask import request, redirect, render_template, session, flash, url_for
 
-POSTS_PER_PAGE = 5
+POSTS_PER_PAGE = 5  
 
 def get_user_blogs(id):
     return db.session.query(Blog.title, Blog.body, Blog.id, Blog.pub_date, User.username).\
     filter_by(owner_id=id).\
     join (User).\
-    order_by(Blog.pub_date.desc()).\
-    paginate(1, 5, False).items
+    order_by(Blog.pub_date.desc())
 
 def get_blogs():
     return db.session.query(Blog.title, Blog.body, Blog.id, Blog.pub_date, User.username).\
     join (User).\
-    order_by(Blog.pub_date.desc()).\
-    paginate(1, 5, False).items
-
+    order_by(Blog.pub_date.desc())
+    
 def get_author(id):
     return db.session.query(User.username).\
             join(Blog).\
@@ -51,12 +49,20 @@ def index():
 @app.route('/blog', methods=['GET'])
 def list_blogs():
     id = request.args.get('id')
-    user = request.args.get('user')    
+    user = request.args.get('user')
+    page = request.args.get('page', 1, type=int)
     user_id = db.session.query(User.id).filter_by(username=user)
-    
+
     if id is None and user is None:
-        blogs=get_blogs()
-        return render_template("listblogs.html", blogs=blogs)
+        blogs=get_blogs().paginate(page, POSTS_PER_PAGE, False)
+
+        next_url = url_for('list_blogs', page=blogs.next_num) \
+            if blogs.has_next else None
+        prev_url = url_for('list_blogs', page=blogs.prev_num) \
+            if blogs.has_prev else None
+
+        return render_template("listblogs.html", blogs=blogs.items, next_url=next_url, prev_url=prev_url)
+        
     elif id != None:
         title=db.session.query(Blog.title).filter_by(id=id).first()
         body=db.session.query(Blog.body).filter_by(id=id).first()
@@ -66,8 +72,15 @@ def list_blogs():
             filter_by(id=id).\
             first()
         return render_template("blog.html", title=title[0],body=body[0],author=author[0],pub_date=pub_date[0])
+    
     else:
-        return render_template("listblogs.html", blogs=get_user_blogs(user_id))
+        blogs=get_user_blogs(user_id).paginate(page, POSTS_PER_PAGE, False)
+        next_url = url_for('list_blogs', page=blogs.next_num) \
+            if blogs.has_next else None
+        prev_url = url_for('list_blogs', page=blogs.prev_num) \
+            if blogs.has_prev else None
+
+        return render_template("listblogs.html", blogs=blogs.items, next_url=next_url, prev_url=prev_url)
 
 @app.route('/newpost', methods=['GET'])
 def newpost():
