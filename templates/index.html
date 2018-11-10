@@ -8,4 +8,12 @@
             <li><a href="./blog?user={{user.username}}">{{user.username}}</a></li>
         </ul>
         {% endfor %}
+
+        {% if prev_url %}
+        <a href="{{ prev_url }}">Previous user page</a>
+        {% endif %}
+        {% if next_url %}
+        <a href="{{ next_url }}">Next user page</a>
+        {% endif %}
+
 {% endblock %}

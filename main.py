@@ -1,19 +1,21 @@
 from models import User, Blog
 from app import app, db
-from flask import request, redirect, render_template, session, flash
+from flask import request, redirect, render_template, session, flash, url_for
+
+POSTS_PER_PAGE = 5
 
 def get_user_blogs(id):
     return db.session.query(Blog.title, Blog.body, Blog.id, Blog.pub_date, User.username).\
     filter_by(owner_id=id).\
     join (User).\
     order_by(Blog.pub_date.desc()).\
-    all()
+    paginate(1, 5, False).items
 
 def get_blogs():
     return db.session.query(Blog.title, Blog.body, Blog.id, Blog.pub_date, User.username).\
     join (User).\
     order_by(Blog.pub_date.desc()).\
-    all()
+    paginate(1, 5, False).items
 
 def get_author(id):
     return db.session.query(User.username).\
@@ -38,15 +40,20 @@ def require_login():
 
 @app.route('/', methods=['GET'])
 def index():
-    users = db.session.query(User.username, User.id).order_by(User.id).all()
-    return render_template("index.html", users=users)
+    page = request.args.get('page', 1, type=int)
+    users = db.session.query(User.username, User.id).order_by(User.id).paginate(page, POSTS_PER_PAGE, False)
+    next_url = url_for('index', page=users.next_num) \
+        if users.has_next else None
+    prev_url = url_for('index', page=users.prev_num) \
+        if users.has_prev else None
+    return render_template("index.html", users=users.items, next_url=next_url,prev_url=prev_url)
 
 @app.route('/blog', methods=['GET'])
 def list_blogs():
     id = request.args.get('id')
     user = request.args.get('user')    
     user_id = db.session.query(User.id).filter_by(username=user)
-
+    
     if id is None and user is None:
         blogs=get_blogs()
         return render_template("listblogs.html", blogs=blogs)
