@@ -2,18 +2,23 @@
 
 {% block content %}
     
-    <h1>Users</h1>
-        {% for user in users: %}
-        <ul class='users'>
-            <li><a href="./blog?user={{user.username}}">{{user.username}}</a></li>
-        </ul>
-        {% endfor %}
-
-        {% if prev_url %}
-        <a href="{{ prev_url }}">Previous user page</a>
-        {% endif %}
-        {% if next_url %}
-        <a href="{{ next_url }}">Next user page</a>
-        {% endif %}
+            <h1>Users</h1>
+            <div class="user_list">
+                <ul class='users'>
+                    {% for user in users: %}
+                        <li class="indiv_user"><a href="./blog?user={{user.username}}">{{user.username}}</a></li>
+                    {% endfor %}
+                </ul>
+            </div>
+            
+        <div class="nextprev">
+            {% if prev_url %}
+            <a class="previous" href="{{ prev_url }}">Previous user page</a>
+            {% endif %}
+            {% if next_url %}
+            <a class="next" href="{{ next_url }}">Next user page</a>
+            {% endif %}
+        </div>
+        
 
 {% endblock %}

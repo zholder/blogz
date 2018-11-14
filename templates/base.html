@@ -7,25 +7,29 @@
 </head>
 <body>
     <nav>
-        <ul>
+        <ul class="navbar">
             <li class='menu'><a href="/">Home</a></li>
             <li class='menu'><a href="/blog">All Blogs</a></li>
             <li class='menu'><a href="/newpost">Add a Blog Entry</a></li>
-            <li class='menu'><a href="/login">Login</a></li>
-            <li class='menu'><a href="/logout">Logout</a></li>
+        <ul class="navbar-right">
+            <li class="menu"><a href="/login">Login</a></li>
+            <li class="menu"><a href="/logout">Logout</a></li>
         </ul>
     </nav>
-    {% with messages = get_flashed_messages() %}
-    {% if messages %}
-      <ul class=flashes>
-        {% for message in messages %}
-        <li>{{ message }}</li>
-        {% endfor %}
-      </ul>
-    {% endif %}
-    {% endwith %}
-    {% block content %}
-    {% endblock %}
+    <main>
+        {% with messages = get_flashed_messages() %}
+        {% if messages %}
+          <ul class='flashes'>
+            {% for message in messages %}
+            <li>{{ message }}</li>
+            {% endfor %}
+          </ul>
+        {% endif %}
+        {% endwith %}
+        {% block content %}
+        {% endblock %}
+    </main>
+   
 
 </body>
 </html>

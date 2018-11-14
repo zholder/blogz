@@ -1,16 +1,22 @@
 body {
     font-family: 'Crimson Text', serif;
-    padding: 0 15px;
+    padding: 0;
     color: navy;
+    margin: 0;
 }
 
 ul {
     padding: 0;
+    margin: 0;
 }
 
 .menu {
     display: inline-block;
     padding: 5px;
+}
+
+.menu-right {
+    text-align: right;
 }
 
 h1 {
@@ -35,6 +41,19 @@ input {
     width: 200px;
 }
 
+li {
+    list-style: none;
+}
+
+nav {
+    background: #efefef;
+    padding: 0 15px;
+    text-decoration: none;
+}
+
+main {
+    padding: 0 15px;
+}
 label, input, textarea{
     display: block;
 }
@@ -45,4 +64,39 @@ label, input, textarea{
 
 a, a:visited {
     color: navy;
+}
+
+.flashes {
+    color: red;
+    list-style: none;
+}
+
+.navbar-right {
+    float: right;
+}   
+
+
+.user_list {
+    text-align: center;
+}
+
+.nextprev {
+    margin-top: 20px;
+    text-align: center;
+}
+
+.previous {
+    margin-right: 10px;
+}
+
+a:hover {
+    color: green;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+.author {
+    font-weight: 600;
 }
