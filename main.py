@@ -154,24 +154,28 @@ def signup():
 
 @app.route('/login', methods=['POST', 'GET'])
 def login():
+    username_error = ''
+    password_error = ''
     if request.method == 'POST':
         username = request.form['username']
         password = request.form['password']
         user = User.query.filter_by(username=username).first()
         if user and check_pw_hash(password, user.pw_hash):
             session['username'] = username
+            flash('Hello, '+ session['username'] + "!")
             return redirect ('/newpost')
         elif user and not check_pw_hash(password, user.pw_hash):
-            flash('Password incorrect')
-            return redirect('/login')
+            password_error = 'Password incorrect'
+            return render_template('login.html', username=username, password_error=password_error)
         elif not user:
-            flash('Username does not exist')
-            return redirect('/login')
+            username_error = 'Username does not exist'
+            return render_template('login.html', username_error=username_error)
     
     return render_template('login.html')
 
 @app.route('/logout')
 def logout():
+    flash('Goodbye, '+ session['username'] + "!")
     del session['username']
     return redirect('/blog')
 

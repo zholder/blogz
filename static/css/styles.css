@@ -1,3 +1,19 @@
+a, a:visited {
+    color: navy;
+}
+
+a:hover {
+    color: green;
+}
+
+a:link {
+    text-decoration: none;
+}
+
+article {
+    border-bottom: 1px solid navy;
+}
+
 body {
     font-family: 'Crimson Text', serif;
     padding: 0;
@@ -5,9 +21,60 @@ body {
     margin: 0;
 }
 
+h1 {
+    text-align: center;
+    color: green;
+}
+
+input {
+    width: 200px;
+    display: block;
+}
+
+label {
+    margin-bottom: 10px;
+    display: block;
+}
+
+li {
+    list-style: none;
+}
+
+main {
+    padding: 0 15px;
+}
+
+nav {
+    background: #efefef;
+    padding: 0 15px;
+    text-decoration: none;
+}
+
 ul {
     padding: 0;
     margin: 0;
+}
+
+textarea {
+    width: 500px;
+    height: 200px;
+    display: block;
+}
+
+.author {
+    font-weight: 600;
+}
+
+.error {
+    color: red;
+}
+
+.flashes {
+    color:navy;
+    list-style: none;
+    text-align: center;
+    margin-top: 15px;
+    font-size: 25px;
 }
 
 .menu {
@@ -19,84 +86,24 @@ ul {
     text-align: right;
 }
 
-h1 {
-    text-align: center;
-    color: green;
-}
-
-article {
-    border-bottom: 1px solid navy;
-}
-
-textarea {
-    width: 500px;
-    height: 200px;
-}
-
-label {
-    margin-bottom: 10px;
-}
-
-input {
-    width: 200px;
-}
-
-li {
-    list-style: none;
-}
-
-nav {
-    background: #efefef;
-    padding: 0 15px;
-    text-decoration: none;
-}
-
-main {
-    padding: 0 15px;
-}
-label, input, textarea{
-    display: block;
-}
-
-.error {
-    color: red;
-}
-
-a, a:visited {
-    color: navy;
-}
-
-.flashes {
-    color: red;
-    list-style: none;
-}
 
 .navbar-right {
     float: right;
 }   
-
-
-.user_list {
-    text-align: center;
-}
 
 .nextprev {
     margin-top: 20px;
     text-align: center;
 }
 
+.login {
+    margin: 0 auto;
+}
+
 .previous {
     margin-right: 10px;
 }
 
-a:hover {
-    color: green;
-}
-
-a:link {
-    text-decoration: none;
-}
-
-.author {
-    font-weight: 600;
+.user_list {
+    text-align: center;
 }
