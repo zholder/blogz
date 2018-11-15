@@ -12,8 +12,12 @@
             <li class='menu'><a href="/blog">All Blogs</a></li>
             <li class='menu'><a href="/newpost">Add a Blog Entry</a></li>
         <ul class="navbar-right">
-            <li class="menu"><a href="/login">Login</a></li>
+            {% if session['username'] != Null %}
             <li class="menu"><a href="/logout">Logout</a></li>
+            {% else %}
+            <li class="menu"><a href="/login">Login</a></li>
+            {% endif %}
+
         </ul>
     </nav>
     <main>
