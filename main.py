@@ -21,7 +21,7 @@ def get_author(id):
             join(Blog).\
             filter_by(id=id).\
             first()
-
+            
 def is_empty(item):
     if item == '':
         return True
@@ -68,6 +68,7 @@ def list_blogs():
         title=db.session.query(Blog.title).filter_by(id=id).first()
         body=db.session.query(Blog.body).filter_by(id=id).first()
         pub_date=db.session.query(Blog.pub_date).filter_by(id=id).first()
+
         author=db.session.query(User.username).\
             join(Blog).\
             filter_by(id=id).\

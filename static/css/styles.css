@@ -1,4 +1,4 @@
-a, a:visited {
+/* a, a:visited {
     color: navy;
 }
 
@@ -45,7 +45,7 @@ main {
 }
 
 nav {
-    background: #efefef;
+    background: #efefef ;
     padding: 0 15px;
     text-decoration: none;
 }
@@ -106,4 +106,4 @@ textarea {
 
 .user_list {
     text-align: center;
-}
+} */
