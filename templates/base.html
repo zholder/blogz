@@ -1,9 +1,9 @@
 <!DOCTYPE html>
 <html>
 <head>
-    <title>{{title}}</title>
     <link rel="stylesheet" href="{{ url_for('static', filename='css/styles.css') }}">
     <link href="https://fonts.googleapis.com/css?family=Crimson+Text" rel="stylesheet">
+
 </head>
 <body>
     <nav>
@@ -12,11 +12,15 @@
             <li class='menu'><a href="/blog">All Blogs</a></li>
             <li class='menu'><a href="/newpost">Add a Blog Entry</a></li>
         <ul class="navbar-right">
-            {% if session['username'] != Null %}
+            {% with user = session['username'] %}
+            {% if user != Null %}
+            <li class="menu"><a href="./blog?user={{user}}">{{ user }}</a></li>
             <li class="menu"><a href="/logout">Logout</a></li>
             {% else %}
             <li class="menu"><a href="/login">Login</a></li>
             {% endif %}
+            {% endwith %}
+
 
         </ul>
     </nav>
