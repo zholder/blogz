@@ -87,7 +87,7 @@ def list_blogs():
 def newpost():
     return render_template('newpost.html', title="New Post")
 
-@app.route("/blog", methods=['POST'])
+@app.route("/newpost", methods=['POST'])
 def add_blog():
     # look inside the request to figure out what the user typed
     blog_title = request.form['blog_title']
