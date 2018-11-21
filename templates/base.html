@@ -39,12 +39,13 @@
     <main>
         {% with messages = get_flashed_messages() %}
         {% if messages %}
-          <ul class='flashes'>
+            <div class="container">
             {% for message in messages %}
-            <li>{{ message }}</li>
+                <div class="alert alert-success">{{ message }}</div>
             {% endfor %}
-          </ul>
         {% endif %}
+            </div>
+
         {% endwith %}
         {% block content %}
         {% endblock %}

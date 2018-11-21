@@ -1,21 +1,30 @@
 {% extends "base.html" %}
 
 {% block content %}
-    
-    <h1>Blogz</h1>
+    <div class="container"> 
+        <div class="jumbotron">
+            <h1>Blogz</h1>
+        </div>
         {% for blog in blogs: %}
         <article>
-            <h2><a href="./blog?id={{blog.id}}">{{blog.title}}</a></h2>
-            <p>{{blog.body}}</p>
-            <p><em>Written by <a class="author" href="./blog?user={{blog.username}}">{{blog.username}}</a> on {{blog.pub_date}}</em></p>
+            <div class="container">
+                <div class="page-header">
+                    <h2><a href="./blog?id={{blog.id}}">{{blog.title}}</a></h2>
+                    <p>{{blog.body}}</p>
+                    <p><em>Written by <a class="author" href="./blog?user={{blog.username}}">{{blog.username}}</a> on {{blog.pub_date}}</em></p>
+                </div>
+            </div>
         </article>
         {% endfor %}
 
-        {% if prev_url %}
-        <a class="newer" href="{{ prev_url }}">Newer posts</a>
-        {% endif %}
-        {% if next_url %}
-        <a class="older" href="{{ next_url }}">Older posts</a>
-        {% endif %}
+        <ul class="breadcrumb">
+            {% if prev_url %}
+            <li><a href="{{ prev_url }}">Newer posts</a></li> 
+            {% endif %}
+            {% if next_url %}
+            <li><a href="{{ next_url }}">Older posts</a></li>
+            {% endif %}
+        </ul>
+    </div>
 
 {% endblock %}

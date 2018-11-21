@@ -1,27 +1,46 @@
 {% extends "base.html" %}
 
 {% block content %}
-<h1>Login</h1>
-<div class="login">
-    <form action="/login" method="post">
-        <table>
-            <tr>
-                <td><label for="username">Username</label></td>
-                <td>
-                    <input name="username" type="text" value="{{ username }}">
-                    <span class="error">{{username_error}}</span>
-                </td>
-            </tr>
-            <tr>
-                <td><label for="password">Password</label></td>
-                <td>
-                    <input name="password" type="password">
-                    <span class="error">{{password_error}}</span>
-                </td>
-            </tr>
-        </table>
-        <input type="submit" value="Login">
-    </form>
-    <p>Don't have an account? <a href="/signup"><strong>Create one!</strong></a></p>
-    {% endblock %}
-</div>
+    {% if username_error%}
+        <div class="container">
+            <div class="alert alert-danger alert-dismissible fade in">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{username_error}}
+            </div>    
+        </div>
+    {% endif %}
+
+    {% if password_error%}
+        <div class="container">
+            <div class="alert alert-danger alert-dismissible fade in">
+                <a href="#" class="close" data-dismiss="alert" aria-label="close">&times;</a>
+                {{password_error}}
+            </div>    
+        </div>
+    {% endif %}
+
+    <div class="container"> 
+            <h1>Login</h1>
+    </div>
+
+    <div class="container">   
+        <form action="/login" method="post">
+            <div class="form-group">
+                <label for="username">Username</label></td>
+                <input name="username" type="text" value="{{ username }}">
+             </div>
+             <div class="form-group">
+                <label for="password">Password</label></td>
+                <input name="password" type="password">
+            </div>
+            <div class="form-group">
+                <input type="submit" class="btn btn-default" value="Login">
+            </div>
+        </form>
+    </div>
+
+    <div class="container">
+        <p>Don't have an account? <a href="/signup"><strong>Create one!</strong></a></p>
+    </div>
+
+{% endblock %}

@@ -1,9 +1,14 @@
 {% extends "base.html" %}
 
 {% block content %}
+
     <article>
-        <h1>{{title}}</h1>
-        <p>{{body}}</p>
-        <p><em>Written by <a class="author" href="./blog?user={{author}}">{{author}}</a> on {{pub_date}}</em></p>
+        <div class="container">
+            <div class="page-header">
+                <h1>{{title}}</h1>
+                <p>{{body}}</p>
+                 <p><em>Written by <a class="author" href="./blog?user={{author}}">{{author}}</a> on {{pub_date}}</em></p>
+            </div>
+        </div>
     </article>
 {% endblock %}
